@@ -5,7 +5,7 @@ from io import TextIOBase, SEEK_END, SEEK_SET
 import re
 from datetime import datetime
 import pandas as pd
-from suristatsparser.common import *
+from .common import *
 LOG_DIR=pjoin(getcwd(), 'logs')
 #types
 row_t = List[float]

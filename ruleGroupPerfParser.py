@@ -12,15 +12,20 @@ class SizeDist:
         self.xs = [i for i in range(0, self.max_size, self.bin_size)]
 
 class RuleGroupPerf:
-     def __init__(self, json_data: Dict[str, Any]) -> None:
+     def __init__(self, json_data: Dict[str, Any], extended_stats=True) -> None:
         self.id = int(json_data['id'])
         self.cols = [k for k in json_data.keys() if k not in ['id', 'size_dist', 'mpm_checks']]
         self.data = [float(json_data[k]) for k in self.cols]
-        self.mpm_checks = int(json_data['mpm_checks'])
-        if 'size_dist' in json_data.keys():
-            self.size_dist = SizeDist(json_data['size_dist'])
-        else:
-            self.size_dist = None
+        self.extended_stats = extended_stats
+        if self.extended_stats:
+            try:
+                self.mpm_checks = int(json_data['mpm_checks'])
+                if 'size_dist' in json_data.keys():
+                    self.size_dist = SizeDist(json_data['size_dist'])
+                else:
+                    self.size_dist = None
+            except KeyError:
+                raise RuntimeError("Missing key 'mpm_checks' or 'size_dist' in JSON data, turn off extended_stats in the constructor call !")
 class RuleGroupPerfParser:
     def __init__(self, data_source: str, use_json: bool=True, from_str: bool=False):
         if not use_json:
