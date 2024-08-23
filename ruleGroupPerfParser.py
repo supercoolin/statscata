@@ -1,7 +1,6 @@
 from os.path import join as pjoin
 from typing import List, Tuple, Dict, Any
 from datetime import datetime
-import pandas as pd
 from .common import *
 import json
 class SizeDist:
