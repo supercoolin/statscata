@@ -7,7 +7,7 @@ setup(
     author="Colin Evrard",
     author_email="colin.evrard@uclouvain.be",
     url="https://github.com/supercoolin/statscata",  # If you have a repository
-    packages=find_packages(),
+    packages=["statscata"],
     install_requires=[
         # List your dependencies here, e.g.,
         'pandas>=2.2.0',
