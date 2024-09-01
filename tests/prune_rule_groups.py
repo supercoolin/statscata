@@ -1,4 +1,5 @@
 import json 
+#This is from an old version of the repo
 with open("rule_group_light.json", 'r') as f:
     content = f.read()
 loaded = json.loads(content)

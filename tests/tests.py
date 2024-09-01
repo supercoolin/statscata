@@ -1,11 +1,11 @@
 import unittest
 import sys
 import os
-from .context import *
-from suristatsparser.common import *
-from suristatsparser.ruleGroupParser import *
-from suristatsparser.ruleGroupPerfParser import *
-from suristatsparser.timestampedParser import *
+from context import *
+from statscata.common import *
+from statscata.ruleGroupParser import *
+from statscata.ruleGroupPerfParser import *
+from statscata.timestampedParser import *
 import os
 cwd = os.path.dirname(os.path.realpath(__file__))
 text = "Date: 7/10/2024 -- 08:26:14 (uptime: 0d, 00h 00m 14s)"
@@ -75,9 +75,9 @@ flow.memuse                                   | Total                     | 6239
 """
 class TestSimpleFile(unittest.TestCase):
     def test_simple_file(self):
-        with open(f"{cwd}/testfile.txt", "w") as f:
+        with open(f"{cwd}/data/testfile.txt", "w") as f:
             f.write(simple_file)
-        with open(f"{cwd}/testfile.txt", "r") as f:
+        with open(f"{cwd}/data/testfile.txt", "r") as f:
             parser = TimestampedCountersParser(f)
             result = parser.parse()
             self.assertListEqual(result, [
