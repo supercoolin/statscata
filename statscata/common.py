@@ -5,6 +5,7 @@ from io import TextIOBase, SEEK_END, SEEK_SET
 import re
 from datetime import datetime
 import pandas as pd
+import pytz
 timestamp_t = Tuple[int, int]
 #REGEXES for parsing
 TimeStampRe = re.compile(r"Date:\s*(\d{1,2}/\d{1,2}/\d{4})\s*--\s*(\d{2}:\d{2}:\d{2})\s*\(uptime:\s*(\dd,\s*\d{2}h\s*\d{2}m\s*\d{2}s)\)"
@@ -18,6 +19,8 @@ def parse_tstamp(line: str) -> timestamp_t:
 
         # Convert date and time to Unix timestamp
         dt = datetime.strptime(f"{date_str} {time_str}", "%m/%d/%Y %H:%M:%S")
+        # Assume UTC timezone
+        dt = pytz.utc.localize(dt)
         timestamp = int(dt.timestamp())
 
         # Convert uptime to seconds
