@@ -1,10 +1,8 @@
 from os.path import join as pjoin
 from typing import List, Tuple, Dict, Any
 from os import getcwd
-from io import TextIOBase, SEEK_END, SEEK_SET
 import re
 from datetime import datetime
-import pandas as pd
 import pytz
 timestamp_t = Tuple[int, int]
 #REGEXES for parsing
