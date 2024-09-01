@@ -4,12 +4,12 @@ from os import getcwd
 import re
 from datetime import datetime
 import pytz
-timestamp_t = Tuple[int, int]
+timestamp_uptime_t = Tuple[int, int]
 #REGEXES for parsing
-TimeStampRe = re.compile(r"Date:\s*(\d{1,2}/\d{1,2}/\d{4})\s*--\s*(\d{2}:\d{2}:\d{2})\s*\(uptime:\s*(\dd,\s*\d{2}h\s*\d{2}m\s*\d{2}s)\)"
+TimeStampUptimeRe = re.compile(r"Date:\s*(\d{1,2}/\d{1,2}/\d{4})\s*--\s*(\d{2}:\d{2}:\d{2})\s*\(uptime:\s*(\dd,\s*\d{2}h\s*\d{2}m\s*\d{2}s)\)"
 )
-def parse_tstamp(line: str) -> timestamp_t:
-    match = TimeStampRe.match(line)
+def parse_tstamp_uptime(tstamp_str: str) -> timestamp_uptime_t:
+    match = TimeStampUptimeRe.match(tstamp_str)
     if match:
         date_str = match.group(1)
         time_str = match.group(2)
@@ -29,7 +29,11 @@ def parse_tstamp(line: str) -> timestamp_t:
         seconds = int(uptime_parts.group(4))
         uptime_seconds = days * 86400 + hours * 3600 + minutes * 60 + seconds
         return (timestamp, uptime_seconds)
-    
+
+def parse_timestamp(tstamp_str: str) -> int:
+    dt = datetime.strptime(tstamp_str, "%Y-%m-%dT%H:%M:%S.%f%z")
+    dt = pytz.utc.localize(dt)
+    return int(dt.timestamp())
 
 def skip_dashline(line: str, trim_first=False, allow_spaces=False) -> bool:
         if trim_first:
