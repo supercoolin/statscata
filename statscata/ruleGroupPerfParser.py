@@ -2,6 +2,11 @@ from typing import List, Tuple, Dict, Any
 from .common import *
 import json
 class SizeDist:
+     """
+     This is a custom stat implemented in github.com/supercoolin/statscata@custom-stats
+     Size dist represent a distribution of buffer sizes checkd by a rule group
+     It is implemented as an histogram with several bins of fixed size
+     """
      def __init__(self, json_data: Dict[str, Any]) -> None:
         self.bin_size = int(json_data['bin_size'])
         self.max_size = int(json_data['max_size'])
