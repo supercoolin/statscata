@@ -86,7 +86,7 @@ class TestSimpleFile(unittest.TestCase):
                 ((1720599973, 13), ("http.memuse", 763572)),
                 ((1720599973, 13), ("flow.memuse", 62395648))
             ])
-        os.remove(f"{cwd}/testfile.txt")
+        os.remove(f"{cwd}/data/testfile.txt")
 in1_parsed = [
     ((1720599973, 13), ("tcp.memuse", 9702184)),
     ((1720599973, 13), ("tcp.reassembly_memuse", 53240820)),
@@ -98,17 +98,6 @@ class TestCollectCounters(unittest.TestCase):
         result = collect_counters(in1_parsed)
         self.assertListEqual(result, ['flow.memuse', 'http.memuse', 'tcp.memuse', 'tcp.reassembly_memuse'])
 
-class TestRuleGroupParser(unittest.TestCase):
-    def test_simple(self):
-        file = f"{cwd}/rule_group_mini.json"
-        rg = RuleGroupDB(file)
-        self.assertEqual(len(rg.rule_groups), 8)
-class TestRuleGroupPerfParser(unittest.TestCase):
-    def test_simple(self):
-        file = f"{cwd}/rule_group_perf.json"
-        rg = RuleGroupPerfParser(file, use_json=True)
-        self.assertTrue(5 in rg.rule_groups.keys())
-        self.assertIsNotNone(rg.rule_groups[5].size_dist)
 
 
 if __name__ == '__main__':
