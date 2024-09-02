@@ -8,7 +8,7 @@ timestamp_uptime_t = Tuple[int, int]
 #REGEXES for parsing
 TimeStampUptimeRe = re.compile(r"Date:\s*(\d{1,2}/\d{1,2}/\d{4})\s*--\s*(\d{2}:\d{2}:\d{2})\s*\(uptime:\s*(\dd,\s*\d{2}h\s*\d{2}m\s*\d{2}s)\)"
 )
-def parse_tstamp_uptime(tstamp_str: str) -> timestamp_uptime_t:
+def parse_tstamp_uptime(tstamp_str: str, to_utc: bool=True) -> timestamp_uptime_t:
     match = TimeStampUptimeRe.match(tstamp_str)
     if match:
         date_str = match.group(1)
@@ -17,8 +17,9 @@ def parse_tstamp_uptime(tstamp_str: str) -> timestamp_uptime_t:
 
         # Convert date and time to Unix timestamp
         dt = datetime.strptime(f"{date_str} {time_str}", "%m/%d/%Y %H:%M:%S")
+        if to_utc:
         # Assume UTC timezone
-        dt = pytz.utc.localize(dt)
+            dt = pytz.utc.localize(dt)
         timestamp = int(dt.timestamp())
 
         # Convert uptime to seconds
@@ -30,9 +31,10 @@ def parse_tstamp_uptime(tstamp_str: str) -> timestamp_uptime_t:
         uptime_seconds = days * 86400 + hours * 3600 + minutes * 60 + seconds
         return (timestamp, uptime_seconds)
 
-def parse_timestamp(tstamp_str: str) -> int:
+def parse_timestamp(tstamp_str: str, to_utc: bool=False) -> int:
     dt = datetime.strptime(tstamp_str, "%Y-%m-%dT%H:%M:%S.%f%z")
-    dt = pytz.utc.localize(dt)
+    if to_utc:
+        dt = pytz.utc.localize(dt)
     return int(dt.timestamp())
 
 def skip_dashline(line: str, trim_first=False, allow_spaces=False) -> bool:
@@ -50,3 +52,19 @@ def parse_column_headers(line: str, sep="|") -> List[str]:
     cols = [col.strip() for col in cols]
     cols = [col for col in cols if len(col) > 0]
     return cols
+
+def json_str_compact(in_str: str) -> str:
+    """
+    Compacts a json string by removing all whitespace
+    It does so without parsing the json. This is used for the json-ish timestamped stats from suricata that are not valid json files.
+    in_str: str: the string to compact
+    returns: str: the compacted string
+    """
+    # Split lines
+    lines = in_str.split("\n")
+    #remove leading and trailing whitespace for every line
+    lines = [line.strip() for line in lines]
+    #remove empty lines
+    lines = [line for line in lines if len(line) > 0]
+    return "".join(lines)
+
