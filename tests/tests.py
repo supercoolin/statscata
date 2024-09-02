@@ -107,6 +107,13 @@ class TestRulePerfParser(unittest.TestCase):
         result = RulePerfParser(path)
         self.assertEqual(len(result.samples), 1)
         self.assertEqual(result.samples[0].rule_stats[0].sid, 2014702)
+    def test_from_str(self):
+        path = os.path.join(cwd, "data", "rule_perf_single.json")
+        with open(path, "r") as f:
+            content = f.read()
+        result = RulePerfParser(content, from_str=True)
+        self.assertEqual(len(result.samples), 1)
+        self.assertEqual(result.samples[0].rule_stats[0].sid, 2014702)
         
 
 
