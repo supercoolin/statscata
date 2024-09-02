@@ -42,7 +42,7 @@ class RuleGroupPerfParser:
         self.parse_json(data)
                 
     def parse_json(self, data: Dict[str, Any]) -> None:
-        self.tstamp = parse_tstamp(data['timestamp'])
+        self.tstamp = parse_tstamp_uptime(data['timestamp'])
         self.rule_groups = {}
         for rg in data['rule_groups']:
             obj = RuleGroupPerf(rg)

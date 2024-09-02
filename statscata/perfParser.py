@@ -7,7 +7,7 @@ LOG_DIR=pjoin(getcwd(), 'logs')
 #types
 row_t = List[float]
 cols_t = List[str]
-dataset = Tuple[timestamp_t, cols_t, List[row_t]]
+dataset = Tuple[timestamp_uptime_t, cols_t, List[row_t]]
 
 class PerfParser:
     def __init__(self, FileHandle: TextIOBase):
@@ -19,7 +19,7 @@ class PerfParser:
         if not skip_dashline(l, trim_first=True):
             raise ValueError("Expected dashline as first line")
         l = self.fh.readline()
-        self.tstamp = parse_tstamp(l)
+        self.tstamp = parse_tstamp_uptime(l)
         l = self.fh.readline()
         if not skip_dashline(l, trim_first=True):
             raise ValueError("Expected dashline after timestamp")

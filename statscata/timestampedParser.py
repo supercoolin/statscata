@@ -8,7 +8,7 @@ LOG_DIR=pjoin(getcwd(), 'logs')
 #types
 counter_t = str
 sample_t = Tuple[counter_t, int]
-timed_sample_t = Tuple[timestamp_t, sample_t]
+timed_sample_t = Tuple[timestamp_uptime_t, sample_t]
 stats_t = List[timed_sample_t]
 
 
@@ -41,7 +41,7 @@ class TimestampedCountersParser:
     def _parse_sample(self) -> bool:
         
         l = self.fh.readline()
-        tstamp = parse_tstamp(l)
+        tstamp = parse_tstamp_uptime(l)
         l = self.fh.readline()
         if not skip_dashline(l):
             raise ValueError("Expected dashline")
