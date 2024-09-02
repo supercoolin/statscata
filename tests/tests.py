@@ -6,21 +6,23 @@ from statscata.common import *
 from statscata.ruleGroupParser import *
 from statscata.ruleGroupPerfParser import *
 from statscata.timestampedParser import *
+from statscata.rulePerfParser import *
 import os
 cwd = os.path.dirname(os.path.realpath(__file__))
 text = "Date: 7/10/2024 -- 08:26:14 (uptime: 0d, 00h 00m 14s)"
+
 class TestExtractWorks(unittest.TestCase):
     def test_extract_not_none(self):
         #expected 1720599974, 14
-        result = parse_tstamp(text)
+        result = parse_tstamp_uptime(text)
         self.assertIsNotNone(result)
     def test_extract_exact(self):
         #expected 1720599974, 14
-        result = parse_tstamp(text)
+        result = parse_tstamp_uptime(text)
         self.assertTupleEqual(result, (1720599974, 14))
     def test_extract_none(self):
         #expected 1720599974, 14
-        result = parse_tstamp("UwU")
+        result = parse_tstamp_uptime("UwU")
         self.assertIsNone(result)
 
 class TestSkipDashline(unittest.TestCase):
@@ -75,9 +77,10 @@ flow.memuse                                   | Total                     | 6239
 """
 class TestSimpleFile(unittest.TestCase):
     def test_simple_file(self):
-        with open(f"{cwd}/data/testfile.txt", "w") as f:
+        path = os.path.join(cwd, "data", "testfile.txt")
+        with open(path, "w") as f:
             f.write(simple_file)
-        with open(f"{cwd}/data/testfile.txt", "r") as f:
+        with open(path, "r") as f:
             parser = TimestampedCountersParser(f)
             result = parser.parse()
             self.assertListEqual(result, [
@@ -98,6 +101,13 @@ class TestCollectCounters(unittest.TestCase):
         result = collect_counters(in1_parsed)
         self.assertListEqual(result, ['flow.memuse', 'http.memuse', 'tcp.memuse', 'tcp.reassembly_memuse'])
 
+class TestRulePerfParser(unittest.TestCase):
+    def test_single(self):
+        path = os.path.join(cwd, "data", "rule_perf_single.json")
+        result = RulePerfParser(path)
+        self.assertEqual(len(result.samples), 1)
+        self.assertEqual(result.samples[0].rule_stats[0].sid, 2014702)
+        
 
 
 if __name__ == '__main__':
