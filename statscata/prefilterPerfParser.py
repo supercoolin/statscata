@@ -30,23 +30,23 @@ class PrefilterPerfParser:
         if not skip_dashline(l, trim_first=True):
             raise ValueError("Expected dashline after meta info")
         l = self.fh.readline()
-        headers = parse_column_headers(l, sep="  ")
-        self.headers = headers
-        if len(headers) == 0:
+        cols = parse_column_headers(l, sep="  ")
+        self.cols = cols
+        if len(cols) == 0:
             raise ValueError("No headers found")
         l = self.fh.readline()
         if not skip_dashline(l, allow_spaces=True, trim_first=True):
-            raise ValueError("Expected dashline after meta info")
+            raise ValueError("Expected dashline after header")
         l = self.fh.readline()
         while l != "\n" and len(l) > 0:
             l = l.strip()
             row_vals = re.split(r"\s{2,}", l)
             name = row_vals[0]
-            data = [val for val in row_vals[1:] if len(val) > 1]
-            row = {col:float(val) for col,val in zip(self.headers[1:], data)}
+            data = [val for val in row_vals[1:] if len(val) >= 1]
+            row = {col:float(val) for col,val in zip(self.cols[1:], data)}
             self.database[name] = row
             l = self.fh.readline()
-        return (self.tstamp, headers, self.database)
+        return (self.tstamp, cols, self.database)
 
         
 
