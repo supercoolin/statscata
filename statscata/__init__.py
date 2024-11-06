@@ -5,3 +5,4 @@ from .ruleGroupPerfParser import *
 from .rulePerfParser import *
 from .timestampedParser import *
 from .prefilterPerfParser import *
+from .ruleGroupPrefilterPerfParser import *

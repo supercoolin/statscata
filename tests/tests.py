@@ -8,6 +8,8 @@ from statscata.ruleGroupPerfParser import *
 from statscata.timestampedParser import *
 from statscata.rulePerfParser import *
 from statscata.prefilterPerfParser import *
+from statscata.ruleGroupPrefilterPerfParser import *
+
 import os
 cwd = os.path.dirname(os.path.realpath(__file__))
 text = "Date: 7/10/2024 -- 08:26:14 (uptime: 0d, 00h 00m 14s)"
@@ -124,6 +126,17 @@ class TestPrefilterPerfParser(unittest.TestCase):
         self.assertEqual(result.database["http_request_line"]["Ticks"], 2451614)
         self.assertEqual(result.database["ja3.hash"]["Ticks/Byte"], 78.00)
         self.assertEqual(result.database["tls.sni#146 (dotprefix)"]["Avg Bytes"], 24.00)
+
+
+class TestRuleGroupPrefilterPerfParser(unittest.TestCase):
+    def test_single(self):
+        path = os.path.join(cwd, "data", "prefilter_perf_groups.log")
+        with open(path, "r") as f:
+            result = RuleGroupPrefilterPerfParser(f)
+        self.assertEqual(result.group_db['Signature group 3']['payload']['Ticks'], 107886)
+        self.assertEqual(result.group_db['Signature group 5']['stream']['Called'], 1)
+        self.assertEqual(len(result.group_db['Signature group 9']), 0)
+
 
 
 
